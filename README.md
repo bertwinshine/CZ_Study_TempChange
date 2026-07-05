@@ -56,7 +56,7 @@ crucible edge (max r) and the coldest is at the crystal, which is what it should
 Note on coordinates: all files use the same convention — r is the radial direction
 (0 to 0.30, measured from the axis to the crucible wall) and z is the axial direction
 (0 to 0.15). If you export more cases from Fluent, check the column order matches this
-before adding them — Fluent doesn't always write columns in the same order, so it's
+before adding them-Fluent doesn't always write columns in the same order, so it's
 worth confirming r and z (and u_r/u_z) aren't swapped.
 
 ## How I checked each case
@@ -72,7 +72,7 @@ For each case I made sure:
 
 Mesh independence was checked on the baseline mesh, and all cases use that same mesh.
 The maximum swirl velocity is the same (0.1476 m/s) in every case, because the rotation
-is fixed and only the temperature changes — a good sign the flow stays laminar as the
+is fixed and only the temperature changes-a good sign the flow stays laminar as the
 hot side gets hotter.
 
 ## The 1790 K case (not included)
@@ -84,7 +84,7 @@ settling.
 To find out why, I put a monitor point inside the melt and watched the temperature
 there as the run went on. Instead of settling to a steady value, it kept swinging up
 and down in a regular wave (about 1.7 K peak-to-peak) and never settled. That means
-the melt has become genuinely unsteady at this temperature — the buoyancy is strong
+the melt has become genuinely unsteady at this temperature-the buoyancy is strong
 enough that the flow keeps moving and there is no single steady answer for a
 steady-state solver to find. The rising residual was the solver telling me there's no
 steady solution, not a mistake in the setup.
