@@ -7,9 +7,7 @@ Everything else stays the same, so this is a clean set where only one thing (the
 temperature difference) changes.
 
 The set was extended after the original five: it now runs from 1740 K up to 1785 K
-in steps of 5 K. I also tried 1790 K, which behaved differently — see the note near
-the end.
-
+in steps of 5 K. I also tried 1790 K, which behaved differently.
 ## The case
 
 - 2D axisymmetric silicon melt in a crucible.
@@ -99,7 +97,8 @@ This is actually a useful result on its own: it shows the steady-state data can 
 trusted up to 1785 K, and 1790 K is where that stops. It marks the top edge of the
 usable range.
 
-<!-- melt-point monitor screenshot goes here: shows the temperature oscillating at 1790 K -->
+<img width="992" height="832" alt="Screenshot 2026-07-05 161535" src="https://github.com/user-attachments/assets/255fbede-7dc3-496d-9410-46122888abc6" />
+
 
 ## What this is / isn't
 
