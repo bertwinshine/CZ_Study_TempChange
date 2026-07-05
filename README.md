@@ -41,13 +41,13 @@ in 5 K steps. The certified band runs 1740–1785 K.
 
 Same columns in every file, one row per mesh node:
 
-- r — radial position (m)
-- z — axial position (m)
-- u_r — radial velocity (m/s)
-- u_z — axial velocity (m/s)
-- u_swirl — swirl velocity (m/s)
-- p — pressure (Pa)
-- T — temperature (K)
+- r - radial position (m)
+- z - axial position (m)
+- u_r - radial velocity (m/s)
+- u_z - axial velocity (m/s)
+- u_swirl - swirl velocity (m/s)
+- p - pressure (Pa)
+- T - temperature (K)
 
 Same mesh in all files (8181 nodes), so the node positions line up between cases.
 r goes 0 to 0.30, z goes 0 to 0.15. In every file the hottest point is at the
@@ -122,4 +122,4 @@ for what the data is used for. It applies to all cases, so I'm noting it here.
 - Solver: ANSYS Fluent 2026 R1 (Student).
 - Ai helper Claude
 
-- Bertwin Shine
+ _ Bertwin Shine
