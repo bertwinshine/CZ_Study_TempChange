@@ -121,4 +121,5 @@ for what the data is used for. It applies to all cases, so I'm noting it here.
 - Baseline compared against Aditya's COMSOL export.
 - Solver: ANSYS Fluent 2026 R1 (Student).
 - Ai helper Claude
-Bertwin Shine
+
+- Bertwin Shine
