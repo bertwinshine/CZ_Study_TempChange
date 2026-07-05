@@ -102,7 +102,7 @@ usable range.
 
 ## What this is / isn't
 
-- This is the temperature study — 10 cases where only ΔT changes (1740–1785 K), plus
+- This is the temperature study-10 cases where only ΔT changes (1740–1785 K), plus
   the 1790 K boundary finding.
 - The rotation study (changing rpm) isn't done yet.
 - These are reference CFD fields. Building the actual ML model from them is the ML
