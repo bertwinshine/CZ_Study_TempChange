@@ -53,7 +53,7 @@ Same mesh in all files (8181 nodes), so the node positions line up between cases
 r goes 0 to 0.30, z goes 0 to 0.15. In every file the hottest point is at the
 crucible edge (max r) and the coldest is at the crystal, which is what it should be.
 
-Note on coordinates: all files use the same convention — r is the radial direction
+Note on coordinates: all files use the same convention-r is the radial direction
 (0 to 0.30, measured from the axis to the crucible wall) and z is the axial direction
 (0 to 0.15). If you export more cases from Fluent, check the column order matches this
 before adding them-Fluent doesn't always write columns in the same order, so it's
