@@ -120,5 +120,5 @@ for what the data is used for. It applies to all cases, so I'm noting it here.
 - Boundary conditions: Huang et al., AIP Advances (2025).
 - Baseline compared against Aditya's COMSOL export.
 - Solver: ANSYS Fluent 2026 R1 (Student).
-
-— Bertwin
+- Ai helper Claude
+Bertwin Shine
