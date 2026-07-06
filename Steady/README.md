@@ -1,6 +1,6 @@
-# CZ melt — temperature study data
+# CZ melt:temperature study data
 
-This repo has 10 CFD reference cases for the Czochralski (CZ) silicon melt.
+This repo has 11 CFD reference cases for the Czochralski (CZ) silicon melt.
 They're meant to be used as ground-truth data for the surrogate/PINN model.
 All cases are the same setup, and I only changed the hot temperature each time.
 Everything else stays the same, so this is a clean set where only one thing (the
