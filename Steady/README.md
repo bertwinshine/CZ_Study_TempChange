@@ -23,6 +23,7 @@ the rotation stays the same (crystal +8 rpm, crucible −3 rpm) in every case.
 
 | File | Hot side | Cold side | ΔT |
 |---|---|---|---|
+| cz_temp_1730_.csv | 1730 K | 1685 K | 45 K |
 | cz_temp_1740_.csv | 1740 K | 1685 K | 55 K |
 | cz_temp_1745_.csv | 1745 K | 1685 K | 60 K |
 | cz_baseline.csv        | 1750 K | 1685 K | 65 K |
