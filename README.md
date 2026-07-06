@@ -1,4 +1,4 @@
-# CZ melt — temperature study data
+# CZ melt:temperature study data
 
 This repo has CFD reference cases for the Czochralski (CZ) silicon melt. They are
 meant to be used as ground-truth data for the surrogate/PINN model.
@@ -12,11 +12,11 @@ This makes it a clean set where only one thing (the temperature) varies.
 The data is split into two folders, because the melt behaves in two different ways
 depending on how hot it gets.
 
-**`steady/`** — the main set. From 1740 K up to 1785 K in steps of 5 K. In this range
+**`steady/`**:the main set. From 1740 K up to 1785 K in steps of 5 K. In this range
 the melt settles into one steady picture, so each case is a single steady-state field.
 These are the certified reference cases.
 
-**`transient/`** — the higher-temperature set: 1790 K, 1795 K, and 1800 K. Above about
+**`transient/`**:the higher-temperature set: 1790 K, 1795 K, and 1800 K. Above about
 1785 K the melt no longer settles — the flow keeps slowly moving and oscillating, so
 there is no single steady answer. These cases were run as time-dependent (transient)
 simulations and then time-averaged over several oscillation cycles. So each file here
