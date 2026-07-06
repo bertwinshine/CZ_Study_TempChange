@@ -3,7 +3,7 @@
 This repo has CFD reference cases for the Czochralski (CZ) silicon melt. They are
 meant to be used as ground-truth data for the surrogate/PINN model.
 
-All cases use the same setup — a 2D axisymmetric silicon melt in a crucible. Only the
+All cases use the same setup a 2D axisymmetric silicon melt in a crucible. Only the
 hot crucible temperature is changed from case to case; everything else stays the same.
 This makes it a clean set where only one thing (the temperature) varies.
 
@@ -50,19 +50,19 @@ range.
 
 Same columns in every file, one row per mesh node:
 
-- r — radial position (m)
-- z — axial position (m)
-- u_r — radial velocity (m/s)
-- u_z — axial velocity (m/s)
-- u_swirl — swirl velocity (m/s)
-- p — pressure (Pa)
-- T — temperature (K)
+- r-radial position (m)
+- z-axial position (m)
+- u_r-radial velocity (m/s)
+- u_z-axial velocity (m/s)
+- u_swirl-swirl velocity (m/s)
+- p-pressure (Pa)
+- T-temperature (K)
 
 Same mesh in all files (8181 nodes), so the node positions line up between cases.
 r goes 0 to 0.30, z goes 0 to 0.15. The hottest point is always at the crucible edge
 (max r) and the coldest at the crystal.
 
-Note on coordinates: all files use the same convention — r is radial (0 to 0.30) and
+Note on coordinates: all files use the same convention-r is radial (0 to 0.30) and
 z is axial (0 to 0.15). Fluent doesn't always write the columns in the same order, so
 if more cases are added, check that r and z (and u_r/u_z) aren't swapped before adding
 them.
@@ -84,7 +84,7 @@ laminar as the hot side gets hotter.
 
 ## What this is / isn't
 
-- This is the temperature study — the hot temperature is the only thing that changes.
+- This is the temperature study-the hot temperature is the only thing that changes.
 - The rotation study (changing rpm) is not done yet.
 - These are reference CFD fields. Building the actual ML model from them is the ML side,
   which is not part of this repo.
@@ -101,5 +101,6 @@ data is used for, and it applies to all cases.
 - Boundary conditions: Huang et al., AIP Advances (2025).
 - Baseline compared against Aditya's COMSOL export.
 - Solver: ANSYS Fluent 2026 R1 (Student).
+- Claude
 
-— Bertwin Shine
+- Bertwin Shine
