@@ -5,6 +5,7 @@ They're meant to be used as ground-truth data for the surrogate/PINN model.
 All cases are the same setup, and I only changed the hot temperature each time.
 Everything else stays the same, so this is a clean set where only one thing (the
 temperature difference) changes.
+This axis varies the crucible hot-wall temperature from 1730 K to 1785 K in 5–10 K steps, with everything else held at the shared anchor: crystal +8 rpm, crucible −3 rpm. The anchor point of the whole dataset is the 1745 K case (cz_(temp 1745).csv) — it's the same converged field, to floating-point precision, as the 8 rpm case in the crystal sweep and the −3 rpm case in the crucible sweep, so all three axes cross at one common state. The 1750 K case (cz_(temp 1750).csv, previously called cz_baseline) is just another point on this axis; the "baseline" name was retired to avoid implying it's the anchor, since it isn't — the anchor is 1745 K. All cases are steady, 8181 nodes, schema r, z, u_r, u_z, u_swirl, p, T.
 
 The set was extended after the original five: it now runs from 1740 K up to 1785 K
 in steps of 5 K. I also tried 1790 K, which behaved differently.
