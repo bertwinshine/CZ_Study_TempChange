@@ -117,6 +117,7 @@ for this data's purpose and applies to all cases.
 - Boundary conditions: Huang et al., AIP Advances (2025), DOI 10.1063/5.0271778.
 - Baseline cross-checked against Aditya's COMSOL export.
 - Solver: ANSYS Fluent 2026 R1 (Student).
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21955315.svg)](https://doi.org/10.5281/zenodo.21955315)
 
-— Bertwin Shine
+
