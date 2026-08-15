@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "CZ Silicon Melt CFD Reference Dataset - Hot Wall Temperature Sweep"
+abstract: >
+  CFD reference dataset for Czochralski (CZ) silicon melt growth, covering
+  hot wall temperature from 1730 to 1785 K across 10 steady cases. All cases
+  use the same anchor point (crystal 8 rpm, crucible -3 rpm, hot wall 1745 K)
+  and were checked for convergence, mesh independence, conservation, and
+  physical consistency. The data was generated as reference input for a PINN
+  and surrogate model being developed under the Quasi / SIMD project.
+  Simulated using ANSYS Fluent 2026 R1.
+authors:
+  - family-names: Kurisinkal Shine
+    given-names: Bertwin
+    University: TU Chemnitz
+    email: bertwinkurisinkalshine@gmail.com
+version: 1.0.0
+date-released: 2026-08-15
+license: CC-BY-4.0
+repository-code: "https://github.com/bertwinshine/CZ_Study_TempChange"
+keywords:
+  - CFD
+  - Czochralski
+  - crystal growth
+  - silicon melt
+  - surrogate model
+  - PINN
+  - reference dataset
+  - ANSYS Fluent
+  - temperature sweep
