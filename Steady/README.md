@@ -38,7 +38,10 @@ temperature swinging in a regular wave of about 1.7 K peak-to-peak and never
 settling. The melt is unsteady at that temperature, so a steady solver has no
 solution to converge to.
 
-1785 K is therefore the top of the steady range. The 1790, 1795 and 1800 K
+At the 1e-3 target, 1785 K was the last case that looked steady. A later rerun
+to 1e-6 (in [CZ-Dataset-Doe](https://github.com/bertwinshine/CZ-Dataset-Doe))
+showed that the cases from 1765 K upwards do not settle either, so the steady
+range at these rotation settings ends between 1760 and 1765 K. The 1790, 1795 and 1800 K
 cases were rerun as transient and are in `../transient/`.
 
 <img width="992" height="832" alt="1790 K steady run not converging" src="https://github.com/user-attachments/assets/255fbede-7dc3-496d-9410-46122888abc6" />
