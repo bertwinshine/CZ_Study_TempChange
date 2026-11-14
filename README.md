@@ -1,123 +1,106 @@
-# CZ melt:temperature study
-
-CFD reference cases for the Czochralski (CZ) silicon melt, meant as ground-truth
-data for the surrogate / PINN model. In this study only the hot crucible
-temperature changes from case to case; everything else is held fixed. That makes
-it a clean single-parameter set: temperature in, field out.
-
-## The shared anchor (read this first)
-
-The anchor of the whole dataset is the **1745 K** case, `cz_(temp 1745).csv`.
-It is the same converged field — to floating-point precision — as the +8 rpm
-case in the crystal sweep and the −3 rpm case in the crucible sweep. So all
-three study axes (temperature, crystal rotation, crucible rotation) pass through
-one common state: crystal +8 rpm, crucible −3 rpm, hot wall 1745 K. That shared
-point is what lets the three sliders line up.
-
-The 1750 K case (`cz_(temp 1750).csv`) used to be called the baseline. It's just
-another point on this axis now — a valid 1750 K field that sits inside the sweep.
-The "baseline" name was dropped so nothing implies 1750 K is the anchor; the
-anchor is 1745 K.
-
-## The two folders
-
-The melt behaves in two ways depending on how hot it gets, so the data is split:
-
-**steady/** — the main set, 1730 K up to 1785 K. In this range the melt settles
-into a single steady field, so each case is one steady-state solution. These are
-the certified reference cases.
-
-**transient/** — the higher-temperature set: 1790, 1795, 1800 K. Above roughly
-1785 K the melt no longer settles; the flow keeps slowly moving and oscillating,
-so there is no single steady answer. These were run time-dependent and then
-time-averaged over several oscillation cycles. Each file here is an averaged
-field, not a snapshot — keep them separate from the steady set when building a
-steady POD basis.
-
-Each folder has its own README with the specifics.
-
-## The case (same for every file)
-
-- 2D axisymmetric silicon melt in a crucible.
-- Boundary conditions from Huang et al., AIP Advances (2025), DOI 10.1063/5.0271778.
-- Buoyancy via the Boussinesq approximation.
-- Crucible radius 0.30 m, melt height 0.15 m (wide, shallow pool).
-- Cold crystal fixed at 1685 K.
-- Rotation fixed: crystal +8 rpm, crucible −3 rpm.
-- Hot crucible wall is the only thing varied, from case to case.
-- Solved in ANSYS Fluent 2026 R1 (Student license).
-
-## Why two types of data
-
-Silicon melts near 1685 K, and real CZ growth runs the melt only tens of degrees
-above that. Up to ~1785 K the flow is steady and easy to trust — the steady/ set.
-Higher up (1790–1800 K) the stronger buoyancy makes the melt restless and weakly
-unsteady, so those cases can't be given as one steady field and are time-averaged
-instead — the transient/ set. The changeover is around 1785–1790 K, the top edge
-of the useful steady range.
-
-## Columns
-
-Same columns in every file, one row per mesh node:
-
-`r, z, u_r, u_z, u_swirl, p, T`
-
-- `r`  — radial position (m), 0 to 0.30
-- `z`  — axial position (m), 0 to 0.15
-- `u_r` — radial velocity (m/s)
-- `u_z` — axial velocity (m/s)
-- `u_swirl` — swirl velocity (m/s)
-- `p`  — pressure (Pa)
-- `T`  — temperature (K)
-
-Same mesh in all files (8181 nodes), so node positions line up between cases.
-The hottest point is always at the crucible edge (max r), the coldest at the
-crystal.
-
-Note on coordinates: Fluent does not always write the columns in the same order.
-If more cases are added, check that r/z (and u_r/u_z) aren't swapped before adding
-them. `certify_case.py` in this folder checks that automatically.
-
-## How each case was checked
-
-For every steady case, `certify_case.py` re-derives the boundary conditions from
-the temperature in the filename and checks the exported field against them:
-
-- solution converged (steady) / settled into a repeating oscillation (transient),
-- hot and cold temperatures come out as set (crystal 1685 K, hot wall = filename),
-- the free-surface and crucible-bottom thermal ramps match the prescribed linear
-  profile between the 1700 K axis floor and the hot wall,
-- domain size correct (r to 0.30, z to 0.15),
-- axis symmetry (radial and swirl velocity vanish on the centreline),
-- no NaN/inf, no duplicate nodes.
-
-Mesh independence was checked on the baseline mesh; every case uses that same mesh.
-The maximum swirl (~0.1476 m/s) is identical across the steady cases simply because
-the rotation is fixed and the swirl boundary condition doesn't depend on temperature
-— not an inference about laminar vs turbulent flow.
-
-## What this is / isn't
-
-- This is the temperature study — the hot wall temperature is the only thing that
-  changes.
-- The crystal-rotation and crucible-rotation studies live in their own repos and
-  share the 1745 K anchor with this one.
-- These are reference CFD fields. Building the ML model from them is the ML side,
-  not part of this repo.
-
-## One caveat to know
-
-The baseline field was compared against a COMSOL result from Aditya. It matched
-well in the bulk (about 1 K difference, correlation R ≈ 0.91), with about a 5 K
-difference at the top corner where the crystal meets the free surface. That's fine
-for this data's purpose and applies to all cases.
-
-## Source
-
-- Boundary conditions: Huang et al., AIP Advances (2025), DOI 10.1063/5.0271778.
-- Baseline cross-checked against Aditya's COMSOL export.
-- Solver: ANSYS Fluent 2026 R1 (Student).
+# CZ melt: hot wall temperature sweep
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21955315.svg)](https://doi.org/10.5281/zenodo.21955315)
 
+CFD cases of a Czochralski (CZ) silicon melt where only the hot crucible wall
+temperature changes from case to case. I made them as reference data for a
+surrogate / PINN model.
 
+The melt stays steady up to 1785 K and becomes weakly unsteady above that, so
+the data is split into two folders:
+
+| Folder | Range | Cases | Type |
+|---|---|---:|---|
+| `Steady/` | 1730 to 1785 K | 11 | steady solutions, certified |
+| `transient/` | 1790 to 1800 K | 3 | transient runs, time-averaged |
+
+Each folder has its own README. Keep the transient files separate when building
+a steady POD basis, since they are a different kind of data.
+
+## Shared anchor
+
+The 1745 K case is the shared anchor of the three sweeps. It is the same field
+as the 8 rpm case in [CZ_Crystal_Sweep](https://github.com/bertwinshine/CZ_Crystal_Sweep)
+and the −3 rpm case in [CZ_study_Crucible_Sweep](https://github.com/bertwinshine/CZ_study_Crucible_Sweep):
+crystal +8 rpm, crucible −3 rpm, hot wall 1745 K.
+
+The 1750 K case used to be called the baseline. It is now just one point in the
+sweep. It was run on an earlier mesh: same node count (8181) but different node
+positions, so it cannot be stacked with the other cases in a snapshot matrix. It
+is not part of [CZ_Silicon_Melt_CFD_Dataset](https://github.com/bertwinshine/CZ_Silicon_Melt_CFD_Dataset)
+or the surrogate.
+
+## Setup (same for every case)
+
+- 2D axisymmetric silicon melt, crucible radius 0.30 m, melt height 0.15 m.
+- Boundary conditions from Huang et al., AIP Advances 15, 105202 (2025),
+  https://doi.org/10.1063/5.0271778.
+- Laminar, Boussinesq buoyancy.
+- Crystal face fixed at 1685 K.
+- Rotation fixed: crystal +8 rpm, crucible −3 rpm.
+- Only the hot crucible wall temperature changes.
+- ANSYS Fluent 2026 R1 (Student licence).
+
+## Columns
+
+One row per mesh node, same columns in every file:
+
+| Column | Meaning | Unit |
+|---|---|---|
+| `r` | radial position, 0 to 0.30 | m |
+| `z` | axial position, 0 to 0.15 | m |
+| `u_r` | radial velocity | m/s |
+| `u_z` | axial velocity | m/s |
+| `u_swirl` | swirl velocity | m/s |
+| `p` | pressure | Pa |
+| `T` | temperature | K |
+
+Fluent does not always write the columns in the same order. If you export more
+cases, check that `r`/`z` and `u_r`/`u_z` are not swapped. `certify_case.py`
+catches this.
+
+## Checks
+
+For every steady case, `Steady/certify_case.py` reads the temperature from the
+file name, works out the thermal boundary conditions from it and checks:
+
+- crystal face at 1685 K and hot wall at the file-name temperature,
+- free-surface and crucible-bottom thermal ramps match the prescribed profiles,
+- domain size (r to 0.30, z to 0.15),
+- radial and swirl velocity are zero on the axis,
+- swirl matches the fixed rotation,
+- no NaN/inf and no duplicate nodes.
+
+```
+cd Steady
+python certify_case.py *.csv
+```
+
+All 11 steady cases pass.
+
+Mesh independence was checked on the baseline mesh. Peak swirl is about
+0.1476 m/s in every steady case because the rotation is fixed and the swirl
+boundary condition does not depend on temperature.
+
+## Comparison with COMSOL
+
+The baseline field was compared with a COMSOL result from Aditya Seshaditya
+(Quasi project). It matches in the bulk to about 1 K (correlation R ≈ 0.91),
+with about 5 K difference at the top corner where the crystal meets the free
+surface. This is acceptable for the intended use and applies to all cases.
+
+## Limitations
+
+- Only the hot wall temperature changes; rotation is fixed.
+- The free surface is a prescribed wall. No turbulence model, radiation,
+  Marangoni convection or magnetic field.
+- Student-licence mesh, 8181 nodes.
+- The ML model built on this data is not part of this repo. See
+  [CZ_Surrogate_App](https://github.com/bertwinshine/CZ_Surrogate_App).
+
+## Credit
+
+The ANSYS setup, sweep design and validation are my work. I wrote the Python
+with help from an AI assistant and have checked and understand all of it.
+
+Bertwin Kurisinkal Shine, TU Chemnitz
