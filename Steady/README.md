@@ -1,127 +1,46 @@
-# CZ melt:temperature study data
+# Steady cases, 1730 to 1785 K
 
-This repo has 11 CFD reference cases for the Czochralski (CZ) silicon melt.
-They're meant to be used as ground-truth data for the surrogate/PINN model.
-All cases are the same setup, and I only changed the hot temperature each time.
-Everything else stays the same, so this is a clean set where only one thing (the
-temperature difference) changes.
-This axis varies the crucible hot-wall temperature from 1730 K to 1785 K in 5–10 K steps, with everything else held at the shared anchor: crystal +8 rpm, crucible −3 rpm. The anchor point of the whole dataset is the 1745 K case (cz_(temp 1745).csv) — it's the same converged field, to floating-point precision, as the 8 rpm case in the crystal sweep and the −3 rpm case in the crucible sweep, so all three axes cross at one common state. The 1750 K case (cz_(temp 1750).csv, previously called cz_baseline) is just another point on this axis; the "baseline" name was retired to avoid implying it's the anchor, since it isn't — the anchor is 1745 K. All cases are steady, 8181 nodes, schema r, z, u_r, u_z, u_swirl, p, T.
+Eleven steady cases. Only the hot crucible wall temperature changes; the
+crystal stays at 1685 K and the rotation at crystal +8 rpm, crucible −3 rpm.
 
-The set was extended after the original five: it now runs from 1740 K up to 1785 K
-in steps of 5 K. I also tried 1790 K, which behaved differently.
-## The case
+| File | Hot wall | Crystal | ΔT | Note |
+|---|---:|---:|---:|---|
+| `cz_(temp 1730).csv` | 1730 K | 1685 K | 45 K | |
+| `cz_(temp 1740).csv` | 1740 K | 1685 K | 55 K | |
+| `cz_(temp 1745).csv` | 1745 K | 1685 K | 60 K | shared anchor |
+| `cz_(temp 1750).csv` | 1750 K | 1685 K | 65 K | earlier mesh, see below |
+| `cz_(temp 1755).csv` | 1755 K | 1685 K | 70 K | |
+| `cz_(temp 1760).csv` | 1760 K | 1685 K | 75 K | |
+| `cz_(temp 1765).csv` | 1765 K | 1685 K | 80 K | |
+| `cz_(temp 1770).csv` | 1770 K | 1685 K | 85 K | |
+| `cz_(temp 1775).csv` | 1775 K | 1685 K | 90 K | |
+| `cz_(temp 1780).csv` | 1780 K | 1685 K | 95 K | |
+| `cz_(temp 1785).csv` | 1785 K | 1685 K | 100 K | |
 
-- 2D axisymmetric silicon melt in a crucible.
-- Boundary conditions taken from Huang et al. (AIP Advances, 2025).
-- Laminar, steady-state, buoyancy handled with the Boussinesq approximation.
-- Crucible radius 0.30 m, melt height 0.15 m (wide, shallow pool).
-- Solved in ANSYS Fluent 2026 R1 (Student license).
+All files have 8181 nodes and the columns `r, z, u_r, u_z, u_swirl, p, T`.
+The 1750 K case is on an earlier mesh with different node positions, so don't
+stack it with the others in a POD snapshot matrix. The other ten share one mesh.
 
-## The cases
+To check the cases:
 
-I only changed the hot crucible temperature. The cold crystal stays at 1685 K and
-the rotation stays the same (crystal +8 rpm, crucible −3 rpm) in every case.
+```
+python certify_case.py *.csv
+```
 
-| File | Hot side | Cold side | ΔT |
-|---|---|---|---|
-| cz_temp_1730_.csv | 1730 K | 1685 K | 45 K |
-| cz_temp_1740_.csv | 1740 K | 1685 K | 55 K |
-| cz_temp_1745_.csv | 1745 K | 1685 K | 60 K |
-| cz_baseline.csv        | 1750 K | 1685 K | 65 K |
-| cz_temp_1755_.csv | 1755 K | 1685 K | 70 K |
-| cz_temp_1760_.csv | 1760 K | 1685 K | 75 K |
-| cz_temp_1765_.csv      | 1765 K | 1685 K | 80 K |
-| cz_temp_1770_.csv      | 1770 K | 1685 K | 85 K |
-| cz_temp_1775_.csv      | 1775 K | 1685 K | 90 K |
-| cz_temp_1780_.csv      | 1780 K | 1685 K | 95 K |
-| cz_temp_1785_.csv      | 1785 K | 1685 K | 100 K |
+The script reads the temperature from the file name, so keep the
+`cz_(temp NNNN).csv` naming if you add cases.
 
-cz_baseline.csv is the validated baseline (65 K). The others step above and below it
-in 5 K steps. The certified band runs 1740–1785 K.
+## Why the sweep stops at 1785 K
 
-## Columns in each CSV
+I also ran 1790 K as a steady case. The residuals dropped to a minimum and then
+rose and oscillated instead of settling. A monitor point in the melt showed the
+temperature swinging in a regular wave of about 1.7 K peak-to-peak and never
+settling. The melt is unsteady at that temperature, so a steady solver has no
+solution to converge to.
 
-Same columns in every file, one row per mesh node:
+1785 K is therefore the top of the steady range. The 1790, 1795 and 1800 K
+cases were rerun as transient and are in `../transient/`.
 
-- r - radial position (m)
-- z - axial position (m)
-- u_r - radial velocity (m/s)
-- u_z - axial velocity (m/s)
-- u_swirl - swirl velocity (m/s)
-- p - pressure (Pa)
-- T - temperature (K)
+<img width="992" height="832" alt="1790 K steady run not converging" src="https://github.com/user-attachments/assets/255fbede-7dc3-496d-9410-46122888abc6" />
 
-Same mesh in all files (8181 nodes), so the node positions line up between cases.
-r goes 0 to 0.30, z goes 0 to 0.15. In every file the hottest point is at the
-crucible edge (max r) and the coldest is at the crystal, which is what it should be.
-
-Note on coordinates: all files use the same convention-r is the radial direction
-(0 to 0.30, measured from the axis to the crucible wall) and z is the axial direction
-(0 to 0.15). If you export more cases from Fluent, check the column order matches this
-before adding them-Fluent doesn't always write columns in the same order, so it's
-worth confirming r and z (and u_r/u_z) aren't swapped.
-
-## How I checked each case
-
-For each case I made sure:
-
-- the solution converged (residuals settled),
-- the temperatures came out right (hot side and cold side match what I set),
-- the domain size is correct (r to 0.30, z to 0.15),
-- the result looks physically sensible (hot at crucible, cold at crystal),
-- the coordinate convention matches the other files (r and u_r point the same way in
-  every case).
-
-Mesh independence was checked on the baseline mesh, and all cases use that same mesh.
-The maximum swirl velocity is the same (0.1476 m/s) in every case, because the rotation
-is fixed and only the temperature changes-a good sign the flow stays laminar as the
-hot side gets hotter.
-
-## The 1790 K case (not included)
-
-I also ran 1790 K (ΔT = 105 K). This one did not converge like the others. The
-residuals dropped to a minimum and then rose and started oscillating instead of
-settling.
-
-To find out why, I put a monitor point inside the melt and watched the temperature
-there as the run went on. Instead of settling to a steady value, it kept swinging up
-and down in a regular wave (about 1.7 K peak-to-peak) and never settled. That means
-the melt has become genuinely unsteady at this temperature-the buoyancy is strong
-enough that the flow keeps moving and there is no single steady answer for a
-steady-state solver to find. The rising residual was the solver telling me there's no
-steady solution, not a mistake in the setup.
-
-So 1790 K is left out of the certified set. Solving it properly would need a transient
-(time-dependent) run, which gives a different kind of data. Whether that's useful for
-the ML model is a question for the ML side, not decided here.
-
-This is actually a useful result on its own: it shows the steady-state data can be
-trusted up to 1785 K, and 1790 K is where that stops. It marks the top edge of the
-usable range.
-
-<img width="992" height="832" alt="Screenshot 2026-07-05 161535" src="https://github.com/user-attachments/assets/255fbede-7dc3-496d-9410-46122888abc6" />
-
-
-## What this is / isn't
-
-- This is the temperature study-10 cases where only ΔT changes (1740–1785 K), plus
-  the 1790 K boundary finding.
-- The rotation study (changing rpm) isn't done yet.
-- These are reference CFD fields. Building the actual ML model from them is the ML
-  side, which isn't part of this repo.
-
-## One thing to know
-
-The baseline was compared against a COMSOL result from Aditya. It matched well in the
-bulk (about 1 K difference, correlation R = 0.91), but there's about a 5 K difference
-at the top boundary where the crystal and free surface meet. Aditya said this is fine
-for what the data is used for. It applies to all cases, so I'm noting it here.
-
-## Source
-
-- Boundary conditions: Huang et al., AIP Advances (2025).
-- Baseline compared against Aditya's COMSOL export.
-- Solver: ANSYS Fluent 2026 R1 (Student).
-- Ai helper Claude
-
- _ Bertwin Shine
+Bertwin Kurisinkal Shine

@@ -1,16 +1,9 @@
 #!/usr/bin/env python3
 """
-certify_case.py
-===============
+Check CZ temperature-sweep cases against their boundary conditions.
 
-Checks one exported CZ temperature-sweep case against the boundary conditions it
-should have been run with, plus the physical sanity tests.
-
-The hot crucible-wall temperature is read from the filename and every thermal
-boundary condition is re-derived from it, so a case whose setup does not match its
-label fails here rather than entering the dataset unnoticed. This is the thermal
-analogue of the rotation-sweep certify scripts, which re-derive swirl from the rpm
-in the filename.
+The hot wall temperature is read from the file name and the thermal boundary
+conditions are worked out from it.
 
 Usage:
     python certify_case.py "steady/cz_(temp 1760).csv"
@@ -22,11 +15,10 @@ Filename must contain the hot-wall temperature as a 4-digit number, e.g.
 
 Expected schema: r, z, u_r, u_z, u_swirl, p, T   (8181 rows)
 
-Rotation is fixed for this sweep (crystal +8 rpm, crucible -3 rpm), so the swirl
-field is checked against those fixed values as a guard that the wrong rotation
-did not slip in.
+Rotation is fixed in this sweep (crystal +8 rpm, crucible -3 rpm) and the
+swirl is checked against it.
 
-Author: Bertwin Kurisinkal Shine
+Bertwin Kurisinkal Shine, TU Chemnitz. Written with help from an AI assistant.
 """
 
 import sys
@@ -41,8 +33,8 @@ R_CRY   = 0.18        # crystal radius (m)
 Z_TOP   = 0.15        # melt height (m)
 
 # ---- fixed thermal references (Huang et al. 2025, Table I) ----------------
-T_CRY   = 1685.0      # crystal face temperature (K) -- cold anchor, fixed
-T_BOT_0 = 1700.0      # crucible-bottom temperature at the axis (K) -- ramp floor
+T_CRY   = 1685.0      # crystal face temperature (K), fixed
+T_BOT_0 = 1700.0      # crucible bottom temperature at the axis (K)
 
 # ---- fixed rotation for the temperature sweep -----------------------------
 OM_CRY  =  0.837758   # crystal rotation, +8 rpm (rad/s)
@@ -51,13 +43,8 @@ OM_CRU  = -0.314000   # crucible rotation, -3 rpm (rad/s)
 # ---- tolerances -----------------------------------------------------------
 TOL_T      = 0.05     # boundary temperature tolerance (K), away from corners
 TOL_T_RAMP = 0.2      # thermal ramp tolerance (K)
-TOL_T_FACE = 0.15     # crystal-face tolerance (K). The face is exactly 1685 K
-                      # except the nodes nearest the free-surface corner, which
-                      # the solver blends into the ramp. The residual is ~0.1 K
-                      # (~0.1 % of the 100 K hot span) and grows with the hot
-                      # wall, so the face is judged with this slightly looser
-                      # bound, mirroring how the rotation scripts judge the
-                      # crystal edge relative to the driving scale.
+TOL_T_FACE = 0.15     # crystal face tolerance (K); nodes near the corner are
+                      # blended by the solver and read up to ~0.1 K high
 TOL_REL    = 1e-3     # relative tolerance on fixed wall swirl (0.1 %)
 TOL_AXIS   = 1.0      # max |u_r| on axis, as % of field max |u_r|
 N_NODES    = 8181
@@ -110,10 +97,7 @@ def certify(path):
     e = np.abs(bot["T"] - ramp).max()
     add("crucible_bottom T ramp", e < TOL_T_RAMP, "max err %.3f K  (%.1f -> %.1f)" % (e, T_BOT_0, t_hot))
 
-    # crystal face: fixed cold temperature. The corner node at r = R_CRY is
-    # shared with the free-surface ramp and is blended by the solver (it sits
-    # slightly above 1685 K, more so as the hot wall rises), so it is excluded
-    # here -- the same treatment the rotation scripts give the shared corner.
+    # crystal face; corner node at r = R_CRY is blended by the solver, excluded
     ci = crys.r < R_CRY - 1e-6
     e = np.abs(crys["T"] - T_CRY)[ci].max()
     add("crystal_face T (fixed)", e < TOL_T_FACE,
@@ -134,9 +118,7 @@ def certify(path):
         "max err %.2e = %.4f %%  (omega %+.6f)" % (e, 100 * e / abs(v_outer), OM_CRU))
 
     # --- physical sanity ----------------------------------------------------
-    # On the symmetry axis the radial velocity must vanish. This is a
-    # consequence of axisymmetry, not a numerical tolerance, and it also
-    # catches a u_r / u_z column transposition at export time.
+    # u_r must be zero on the axis; also catches swapped u_r / u_z columns
     ratio = 100 * np.abs(axis.u_r).max() / np.abs(d.u_r).max()
     add("axis symmetry (u_r -> 0)", ratio < TOL_AXIS, "%.3f %% of field max" % ratio)
 
