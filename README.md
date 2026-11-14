@@ -1,17 +1,20 @@
 # CZ melt: hot wall temperature sweep
 
+> **Superseded by [CZ-Dataset-Doe](https://github.com/bertwinshine/CZ-Dataset-Doe).** These cases were stopped at Fluent's default residual target of 1e-3. Rerun to 1e-6 with the same settings, the cases at 1765, 1770, 1775, 1780 and 1785 K do not settle to a steady solution, so treat them as not steady. The cases up to 1760 K converge, with velocity fields typically 1 to 5 % different. This repository stays online unchanged as version 1.
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21955315.svg)](https://doi.org/10.5281/zenodo.21955315)
 
 CFD cases of a Czochralski (CZ) silicon melt where only the hot crucible wall
 temperature changes from case to case. I made them as reference data for a
 surrogate / PINN model.
 
-The melt stays steady up to 1785 K and becomes weakly unsteady above that, so
-the data is split into two folders:
+At the original 1e-3 residual target the melt looked steady up to 1785 K and
+was clearly unsteady above that, so the data is split into two folders (see the
+note above about 1765 to 1785 K):
 
 | Folder | Range | Cases | Type |
 |---|---|---:|---|
-| `Steady/` | 1730 to 1785 K | 11 | steady solutions, certified |
+| `Steady/` | 1730 to 1785 K | 11 | steady runs to 1e-3, certified |
 | `transient/` | 1790 to 1800 K | 3 | transient runs, time-averaged |
 
 Each folder has its own README. Keep the transient files separate when building
